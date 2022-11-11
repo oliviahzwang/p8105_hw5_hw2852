@@ -1,0 +1,14 @@
+---
+title: "P8105 Data Science I Homework 4"
+author: Olivia Wang (hw2852)
+output: github_document
+date: "2022-11-14"
+---
+
+In preparation for the problems below, we will load the following libraries: 
+
+```{r load_libraries}
+library(tidyverse)
+library(readxl)
+library(dplyr)
+```
