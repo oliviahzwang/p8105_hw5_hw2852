@@ -39,5 +39,37 @@ The _Washington Post's_ raw homicide data contains __`r nrow(homicide_data)` row
 
 Based on the output generated above, we can see that there are no missing values for all variables except for `latitude` and `longitude`. The `latitude` variable has __`r sum(is.na(homicide_data$lat))` missing values__ and the `longitude` variable has __`r sum(is.na(homicide_data$lon))` missing values__. 
 
+## 2.1 City-Level Summaries of Homicide Data
+
+#### _Total Homicides per City_
+
+In the following code chunk, we create a new `city_state` variable (e.g. "Baltimore, MD") by joining the existing city and state variables using the `paste` command. Since each row represents a unique homicide case, we can determine the total number of homicides by counting the number of observations per city, state pair. 
+
+```{r}
+homicide_data = homicide_data %>% 
+  mutate(city_state = as.character(paste(city, state, sep = ", ")))
+
+homicide_data %>% 
+  group_by(city_state) %>% 
+  summarize(n_obs = n()) %>% 
+  arrange(desc(n_obs)) %>% 
+  knitr::kable(col.names = c('City, State', 'Total Homicides (n)'))
+```
+
+#### _Total Unsolved Homicides per City_
+
+To determine the total number of unsolved homicides per city, we can generate a new binary `unsolved_homicide` variable, which will take on a value of 1 if the homicide is unsolved (i.e., disposition = "Closed without arrest" or "Open/No arrest") and 0 if the homicide is solved (i.e., disposition = "Closed by arrest"). 
+
+```{r}
+homicide_data = homicide_data %>% 
+  mutate(unsolved_homicide = ifelse(disposition == "Closed by arrest", 0, 1))
+
+homicide_data %>% 
+  group_by(city_state) %>%
+  filter(unsolved_homicide == 1) %>% 
+  summarize(n_obs = n()) %>% 
+  arrange(desc(n_obs)) %>% 
+  knitr::kable(col.names = c('City, State', 'Unsolved Homicides (n)'))
+```
 
 # Problem 3
