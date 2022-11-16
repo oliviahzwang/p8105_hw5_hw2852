@@ -2,7 +2,7 @@
 title: "P8105 Data Science I Homework 4"
 author: Olivia Wang (hw2852)
 output: github_document
-date: "2022-11-14"
+date: "2022-11-16"
 ---
 
 In preparation for the problems below, we will load the following libraries: 
@@ -12,3 +12,32 @@ library(tidyverse)
 library(readxl)
 library(dplyr)
 ```
+
+# Problem 1
+
+
+
+# Problem 2
+
+Let us begin by importing the CSV file containing _Washington Post's_ homicide data downloaded from GitHub, and applying the `clean_names` function. We can then apply the `skim` function to generate a brief data summary. 
+
+```{r}
+homicide_data = 
+  read_csv("./homicide-data.csv") %>% 
+  janitor::clean_names()
+
+skimr::skim(homicide_data)
+```
+
+The _Washington Post's_ raw homicide data contains __`r nrow(homicide_data)` rows__ and __`r ncol(homicide_data)` columns__. Each row corresponds to one homicide case, and the following information regarding the homicide are found in each column:
+
+* Case ID code
+* Reported date
+* Victim identifiers (name, age, race and sex)
+* Location details (state, city, latitude and longitude)
+* Disposition
+
+Based on the output generated above, we can see that there are no missing values for all variables except for `latitude` and `longitude`. The `latitude` variable has __`r sum(is.na(homicide_data$lat))` missing values__ and the `longitude` variable has __`r sum(is.na(homicide_data$lon))` missing values__. 
+
+
+# Problem 3
