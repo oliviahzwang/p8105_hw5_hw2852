@@ -72,4 +72,33 @@ homicide_data %>%
   knitr::kable(col.names = c('City, State', 'Unsolved Homicides (n)'))
 ```
 
+## 2.2 City-Level Homicide Porportion Estimates & 95% CIs
+
+#### _Proportion of Unsolved Homicides in Baltimore, MD_
+
+Below we use the `prop.test` function to estimate the proportion of homicides that are unsolved in Baltimore, MD. The arguments for the `prop.test` function, x and n, were determined using the outputs from Problem 2.1. Argument x, a vector of counts of successes, is the number of unsolved homicides in Baltimore, MD, and n, a vector of counts of trials, is the total number of homicides in Baltimore, MD.
+
+The output generated from the `prop.test` function is then saved as an R object. The `broom::tidy()` function was applied to tidy these data, and finally the proportion estimate and the 95% confidence interval values were pulled. 
+
+```{r}
+homicide_data %>% 
+  filter(city_state == "Baltimore, MD")
+
+prop_test_homicide_baltimore = 
+  prop.test(x = 1825, n = 2827, conf.level = 0.95) %>% 
+  broom::tidy()
+
+prop_test_homicide_baltimore %>% 
+  select(estimate, starts_with("conf"))
+```
+
+
+
 # Problem 3
+
+
+
+
+
+
+
