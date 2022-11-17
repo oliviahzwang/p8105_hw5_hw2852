@@ -114,13 +114,31 @@ homicide_data_to_prop_test = function(homicide_data) {
     select(estimate, starts_with("conf"))
 }
 
-inner_join(total_homicides, unsolved_homicides, by = "city_state") %>%
+homicide_data_analysis = inner_join(total_homicides, unsolved_homicides, by = "city_state") %>%
   nest(data = n_obs.x:n_obs.y) %>%
   mutate(data = purrr::map(data, ~ homicide_data_to_prop_test(.x))) %>%
-  unnest
+  unnest(cols = data)
+
+knitr::kable(homicide_data_analysis, col.names = c('City, State', 'Proportion Estimate', 'Lower 95% CI Limit', 'Upper 95% CI Limit'))
 ```
 
+#### _Plotting City-Level Homicides Proportion Estimates & 95% CIs_
 
+using the generated output from the analysis above, we can plot the city-level proportion estimates of unsolved homicides using `ggplot`. In addition to plotting the proportion estimates using `geom_point`, the plot below also depicts the 95% confidence intervals associated with each estimate, which were applied using `geom_errorbar`. Cities are ordered in increasing proportion estimates of unsolved homicides. 
+
+```{r}
+homicide_data_analysis %>% 
+  ggplot(aes(x = reorder(city_state, estimate), y = estimate, color = city_state)) + 
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(
+    title = "City-Level Proportion Estimates for Unsolved Homicides", 
+    x = "City, State", 
+    y = "Proportion Estimate") + 
+  theme(
+    axis.text.x = element_text(angle = 70, hjust = 1), 
+    legend.position = "none")
+```
 
 # Problem 3
 
