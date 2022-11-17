@@ -142,6 +142,46 @@ homicide_data_analysis %>%
 
 # Problem 3
 
+## 3.1 Simulation Setup
+
+#### _Setting Model Design Elements_
+
+To 
+
+```{r}
+ttest_sim = function(n = 30, mu, sigma = 5) {
+  tibble(x = rnorm(n = n, mean = mu, sd = sigma)) %>%
+    t.test() %>% 
+    broom::tidy() %>% 
+    select(estimate, p.value)
+}
+output =
+  data.frame(mu = 0:6, data = 0:6) %>%
+    mutate(data = purrr::map(.x = data, ~ rerun(5000, ttest_sim(mu = .x)))) %>%
+    unnest() %>%
+    unnest()
+
+output
+```
+
+```{r}
+output %>%
+  mutate(is_rejected = ifelse(p.value < 0.05, 1, 0)) %>%
+  group_by(mu) %>%
+  summarize(power = mean(is_rejected)) %>%
+  ggplot(aes(x = mu, y = power)) +
+  geom_point()
+```
+```{r}
+output %>%
+  group_by(mu) %>%
+  summarize(mean_mu_hat = mean(estimate), mean_rejected_mu_hat = mean(estimate[p.value < 0.05])) %>%
+  ggplot() +
+  geom_point(aes(x = mu, y = mean_mu_hat, colour = 'red')) +
+  geom_point(aes(x = mu, y = mean_rejected_mu_hat, color = 'green'))
+```
+
+
 
 
 
